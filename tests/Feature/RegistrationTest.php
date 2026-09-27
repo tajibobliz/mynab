@@ -1,53 +1,66 @@
 <?php
 
-namespace Tests\Feature;
-
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Jetstream;
-use Tests\TestCase;
 
-class RegistrationTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    public function test_registration_screen_can_be_rendered(): void
-    {
-        if (! Features::enabled(Features::registration())) {
-            $this->markTestSkipped('Registration support is not enabled.');
-        }
-
-        $response = $this->get('/register');
-
-        $response->assertStatus(200);
+test('registration screen can be rendered', function () {
+    if (! Features::enabled(Features::registration())) {
+        $this->markTestSkipped('Registration support is not enabled.');
     }
 
-    public function test_registration_screen_cannot_be_rendered_if_support_is_disabled(): void
-    {
-        if (Features::enabled(Features::registration())) {
-            $this->markTestSkipped('Registration support is enabled.');
-        }
+    $response = $this->get('/register');
 
-        $response = $this->get('/register');
+    $response->assertStatus(200);
+});
 
-        $response->assertStatus(404);
-    }
+test('new users can register', function () {
+    $response = $this->post('/register', [
+        'name' => 'María Rojas',
+        'email' => 'maria@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+    ]);
 
-    public function test_new_users_can_register(): void
-    {
-        if (! Features::enabled(Features::registration())) {
-            $this->markTestSkipped('Registration support is not enabled.');
-        }
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('dashboard', absolute: false));
+    $this->assertDatabaseHas('users', [
+        'email' => 'maria@example.com',
+    ]);
+});
 
-        $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
-        ]);
+test('registration fails with a duplicate email', function () {
+    User::factory()->create(['email' => 'maria@example.com']);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
-    }
-}
+    $response = $this->post('/register', [
+        'name' => 'María Rojas',
+        'email' => 'maria@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+    ]);
+
+    $response->assertSessionHasErrors('email');
+    $this->assertGuest();
+    $this->assertDatabaseCount('users', 1);
+});
+
+test('registration fails with a password shorter than 8 characters', function () {
+    $response = $this->post('/register', [
+        'name' => 'María Rojas',
+        'email' => 'maria@example.com',
+        'password' => 'short1',
+        'password_confirmation' => 'short1',
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+    ]);
+
+    $response->assertSessionHasErrors('password');
+    $this->assertGuest();
+    $this->assertDatabaseMissing('users', [
+        'email' => 'maria@example.com',
+    ]);
+});

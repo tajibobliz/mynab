@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { CircleCheck, TriangleAlert, X } from 'lucide-vue-next';
 
 const page = usePage();
 const show = ref(true);
@@ -16,21 +17,29 @@ watchEffect(async () => {
 
 <template>
     <div>
-        <div v-if="show && message" :class="{ 'bg-indigo-500': style == 'success', 'bg-red-700': style == 'danger' }">
+        <div
+            v-if="show && message"
+            class="border-b"
+            :class="{
+                'bg-status-success/10 border-status-success/30': style == 'success',
+                'bg-status-danger/10 border-status-danger/30': style == 'danger',
+            }"
+        >
             <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between flex-wrap">
                     <div class="w-0 flex-1 flex items-center min-w-0">
-                        <span class="flex p-2 rounded-lg" :class="{ 'bg-indigo-600': style == 'success', 'bg-red-600': style == 'danger' }">
-                            <svg v-if="style == 'success'" class="size-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-
-                            <svg v-if="style == 'danger'" class="size-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                            </svg>
+                        <span
+                            class="flex p-2 rounded-lg"
+                            :class="{
+                                'bg-status-success/20 text-status-success': style == 'success',
+                                'bg-status-danger/20 text-status-danger': style == 'danger',
+                            }"
+                        >
+                            <CircleCheck v-if="style == 'success'" class="size-5" />
+                            <TriangleAlert v-if="style == 'danger'" class="size-5" />
                         </span>
 
-                        <p class="ms-3 font-medium text-sm text-white truncate">
+                        <p class="ms-3 font-medium text-sm text-gray-900 dark:text-text truncate">
                             {{ message }}
                         </p>
                     </div>
@@ -38,14 +47,15 @@ watchEffect(async () => {
                     <div class="shrink-0 sm:ms-3">
                         <button
                             type="button"
-                            class="-me-1 flex p-2 rounded-md focus:outline-none sm:-me-2 transition"
-                            :class="{ 'hover:bg-indigo-600 focus:bg-indigo-600': style == 'success', 'hover:bg-red-600 focus:bg-red-600': style == 'danger' }"
+                            class="-me-1 flex p-2 rounded-md text-gray-500 dark:text-text-secondary focus:outline-none sm:-me-2 transition duration-150"
+                            :class="{
+                                'hover:bg-status-success/20 focus:bg-status-success/20': style == 'success',
+                                'hover:bg-status-danger/20 focus:bg-status-danger/20': style == 'danger',
+                            }"
                             aria-label="Dismiss"
                             @click.prevent="show = false"
                         >
-                            <svg class="size-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X class="size-5" />
                         </button>
                     </div>
                 </div>
