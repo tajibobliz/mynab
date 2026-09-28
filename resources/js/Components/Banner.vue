@@ -1,16 +1,24 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { CircleCheck, TriangleAlert, X } from 'lucide-vue-next';
+import { CircleCheck, Info, TriangleAlert, X } from 'lucide-vue-next';
 
 const page = usePage();
 const show = ref(true);
 const style = ref('success');
 const message = ref('');
 
-watchEffect(async () => {
-    style.value = page.props.jetstream.flash?.bannerStyle || 'success';
-    message.value = page.props.jetstream.flash?.banner || '';
+// Sigue el patrón de CLAUDE.md: los controllers hacen
+// ->with('flash.success'|'flash.info'|'flash.danger', 'mensaje'). Esa clave
+// aterriza en session('flash') = { success: '...' } (Arr::set con dot
+// notation), y Jetstream ya comparte esa sesión completa en
+// page.props.jetstream.flash — no hace falta tocar HandleInertiaRequests.
+watchEffect(() => {
+    const flash = page.props.jetstream.flash ?? {};
+    const encontrado = ['success', 'info', 'danger'].find((clave) => flash[clave]);
+
+    style.value = encontrado ?? 'success';
+    message.value = encontrado ? flash[encontrado] : '';
     show.value = true;
 });
 </script>
@@ -22,6 +30,7 @@ watchEffect(async () => {
             class="border-b"
             :class="{
                 'bg-status-success/10 border-status-success/30': style == 'success',
+                'bg-status-info/10 border-status-info/30': style == 'info',
                 'bg-status-danger/10 border-status-danger/30': style == 'danger',
             }"
         >
@@ -32,11 +41,13 @@ watchEffect(async () => {
                             class="flex p-2 rounded-lg"
                             :class="{
                                 'bg-status-success/20 text-status-success': style == 'success',
+                                'bg-status-info/20 text-status-info': style == 'info',
                                 'bg-status-danger/20 text-status-danger': style == 'danger',
                             }"
                         >
                             <CircleCheck v-if="style == 'success'" class="size-5" />
-                            <TriangleAlert v-if="style == 'danger'" class="size-5" />
+                            <Info v-else-if="style == 'info'" class="size-5" />
+                            <TriangleAlert v-else-if="style == 'danger'" class="size-5" />
                         </span>
 
                         <p class="ms-3 font-medium text-sm text-gray-900 dark:text-text truncate">
@@ -50,6 +61,7 @@ watchEffect(async () => {
                             class="-me-1 flex p-2 rounded-md text-gray-500 dark:text-text-secondary focus:outline-none sm:-me-2 transition duration-150"
                             :class="{
                                 'hover:bg-status-success/20 focus:bg-status-success/20': style == 'success',
+                                'hover:bg-status-info/20 focus:bg-status-info/20': style == 'info',
                                 'hover:bg-status-danger/20 focus:bg-status-danger/20': style == 'danger',
                             }"
                             aria-label="Dismiss"

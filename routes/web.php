@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PresupuestoController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,4 +22,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::resource('presupuestos', PresupuestoController::class);
+    Route::post('presupuestos/{presupuesto}/seleccionar', [PresupuestoController::class, 'seleccionar'])
+        ->name('presupuestos.seleccionar');
 });

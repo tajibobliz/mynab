@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -31,6 +33,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'presupuesto_activo_id',
     ];
 
     /**
@@ -65,5 +68,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function presupuestos(): HasMany
+    {
+        return $this->hasMany(Presupuesto::class);
+    }
+
+    public function presupuestoActivo(): BelongsTo
+    {
+        return $this->belongsTo(Presupuesto::class, 'presupuesto_activo_id');
     }
 }

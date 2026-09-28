@@ -1,0 +1,48 @@
+import {
+    Book,
+    Briefcase,
+    Car,
+    Coins,
+    CreditCard,
+    DollarSign,
+    Dumbbell,
+    Film,
+    Gift,
+    GraduationCap,
+    Heart,
+    Home,
+    Music,
+    PiggyBank,
+    Plane,
+    ShoppingCart,
+    Target,
+    TrendingUp,
+    Utensils,
+    Wallet,
+} from 'lucide-vue-next';
+
+// Mapa string (config('mynab.iconos_presupuesto') / prop `iconosPresupuesto`) -> componente Lucide.
+// Las claves son la fuente de verdad del backend; este mapa solo resuelve el
+// componente Vue para cada clave que ya llega vía Inertia.
+export const lucideIconMap = {
+    wallet: Wallet,
+    briefcase: Briefcase,
+    plane: Plane,
+    gift: Gift,
+    heart: Heart,
+    home: Home,
+    car: Car,
+    'graduation-cap': GraduationCap,
+    utensils: Utensils,
+    'shopping-cart': ShoppingCart,
+    'piggy-bank': PiggyBank,
+    'credit-card': CreditCard,
+    coins: Coins,
+    'dollar-sign': DollarSign,
+    'trending-up': TrendingUp,
+    target: Target,
+    book: Book,
+    dumbbell: Dumbbell,
+    music: Music,
+    film: Film,
+};

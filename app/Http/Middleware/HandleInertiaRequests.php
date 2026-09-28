@@ -35,9 +35,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Carga las relaciones ANTES del array de retorno: Jetstream comparte
+        // `auth.user` en su propio middleware vendor (ShareInertiaData) vía
+        // $user->toArray(), que serializa cualquier relación ya cargada en la
+        // instancia. Como ambos middlewares resuelven el mismo objeto de
+        // Auth::user(), esto basta para exponer
+        // `auth.user.presupuestos` / `.presupuestoActivo` sin tocar el vendor.
+        $request->user()?->loadMissing(['presupuestos', 'presupuestoActivo']);
+
         return [
             ...parent::share($request),
-            //
+            'iconosPresupuesto' => config('mynab.iconos_presupuesto'),
         ];
     }
 }

@@ -6,6 +6,7 @@ import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
+import PresupuestoSelector from '@/Components/PresupuestoSelector.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 
@@ -47,10 +48,19 @@ const logout = () => {
                                 </Link>
                             </div>
 
+                            <!-- Presupuesto Selector -->
+                            <div class="hidden sm:flex sm:items-center sm:ms-6 sm:border-s sm:border-gray-200 dark:sm:border-border sm:ps-6">
+                                <PresupuestoSelector />
+                            </div>
+
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-6 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
+                                </NavLink>
+
+                                <NavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
+                                    Presupuestos
                                 </NavLink>
                             </div>
                         </div>
@@ -173,9 +183,18 @@ const logout = () => {
 
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
+                    <!-- Presupuesto Selector -->
+                    <div class="px-4 py-3 border-b border-gray-200 dark:border-border">
+                        <PresupuestoSelector />
+                    </div>
+
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
+                            Presupuestos
                         </ResponsiveNavLink>
                     </div>
 
