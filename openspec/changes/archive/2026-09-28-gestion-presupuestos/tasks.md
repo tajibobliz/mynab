@@ -45,13 +45,13 @@
 
 ## 7. Vistas Inertia (Vue)
 
-- [ ] 7.1 Crear `resources/js/Pages/Presupuestos/Index.vue`: lista de tarjetas con nombre + icono + color + descripción + acciones (editar, borrar, seleccionar como activo). Empty state si no hay presupuestos: mensaje "Aún no tienes presupuestos" + botón "Crear presupuesto" con icono Plus
-- [ ] 7.2 Crear `resources/js/Pages/Presupuestos/Create.vue`: formulario con inputs nombre, descripcion, color (picker), icono (selector visual de iconos Lucide)
-- [ ] 7.3 Crear `resources/js/Pages/Presupuestos/Edit.vue`: mismo formulario que Create pero prellenado
-- [ ] 7.4 Crear `resources/js/Pages/Presupuestos/Show.vue` (placeholder): mensaje "El detalle del presupuesto se implementa en el Change 8 (zero-based budgeting)"
-- [ ] 7.5 Crear componente reutilizable `resources/js/Components/PresupuestoCard.vue` con las variantes: `default` (index) y `selector` (dropdown navbar)
-- [ ] 7.6 Crear componente `resources/js/Components/IconoSelector.vue` para el picker de iconos Lucide en Create/Edit
-- [ ] 7.7 Crear componente `resources/js/Components/ColorPicker.vue` con paleta predefinida de ~8 colores + hex custom
+- [x] 7.1 Crear `resources/js/Pages/Presupuestos/Index.vue`: lista de tarjetas con nombre + icono + color + descripción + acciones (editar, borrar, seleccionar como activo). Empty state si no hay presupuestos: mensaje "Aún no tienes presupuestos" + botón "Crear presupuesto" con icono Plus
+- [x] 7.2 Crear `resources/js/Pages/Presupuestos/Create.vue`: formulario con inputs nombre, descripcion, color (picker), icono (selector visual de iconos Lucide)
+- [x] 7.3 Crear `resources/js/Pages/Presupuestos/Edit.vue`: mismo formulario que Create pero prellenado
+- [x] 7.4 Crear `resources/js/Pages/Presupuestos/Show.vue` (placeholder): mensaje "El detalle del presupuesto se implementa en el Change 8 (zero-based budgeting)"
+- [x] 7.5 Crear componente reutilizable `resources/js/Components/PresupuestoCard.vue` con las variantes: `default` (index) y `selector` (dropdown navbar)
+- [x] 7.6 Crear componente `resources/js/Components/IconoSelector.vue` para el picker de iconos Lucide en Create/Edit
+- [x] 7.7 Crear componente `resources/js/Components/ColorPicker.vue` con paleta predefinida de ~8 colores + hex custom
 
 ## 8. Selector en el navbar
 
