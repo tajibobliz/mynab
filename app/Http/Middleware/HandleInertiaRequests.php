@@ -48,6 +48,23 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'iconosPresupuesto' => config('mynab.iconos_presupuesto'),
             'monedasActivas' => Moneda::activas()->orderBy('codigo')->get(),
+            // Closure: Inertia la resuelve en el mismo momento que cualquier
+            // otro prop de un full load (ver Response::resolvePartialProperties
+            // — solo LazyProp/Deferrable se saltan ahí, un Closure plano no).
+            // No es "solo se ejecuta si la página la pide"; se ejecuta en
+            // cada visita autenticada, igual que monedasActivas. Se usa como
+            // closure solo por conveniencia sintáctica del guard null.
+            'cuentasDelPresupuestoActivo' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user || ! $user->presupuesto_activo_id) {
+                    return [];
+                }
+
+                $user->loadMissing('presupuestoActivo.cuentas.moneda');
+
+                return $user->presupuestoActivo?->cuentas ?? [];
+            },
         ];
     }
 }

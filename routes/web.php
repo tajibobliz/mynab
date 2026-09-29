@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\TipoCambioController;
@@ -43,4 +44,6 @@ Route::middleware([
     Route::resource('tipos-cambio', TipoCambioController::class)
         ->except('show')
         ->parameters(['tipos-cambio' => 'tipo_cambio']);
+
+    Route::resource('cuentas', CuentaController::class)->except('show');
 });

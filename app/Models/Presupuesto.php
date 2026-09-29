@@ -6,6 +6,7 @@ use Database\Factories\PresupuestoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Presupuesto extends Model
@@ -31,5 +32,10 @@ class Presupuesto extends Model
     public function monedaBase(): BelongsTo
     {
         return $this->belongsTo(Moneda::class, 'moneda_base_codigo', 'codigo');
+    }
+
+    public function cuentas(): HasMany
+    {
+        return $this->hasMany(Cuenta::class);
     }
 }
