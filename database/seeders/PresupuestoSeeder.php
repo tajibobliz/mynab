@@ -29,12 +29,14 @@ class PresupuestoSeeder extends Seeder
             'nombre' => 'Personal',
             'color' => '#22c55e',
             'icono' => 'wallet',
+            'moneda_base_codigo' => 'BOB',
         ]);
 
         $maria->presupuestos()->create([
             'nombre' => 'Freelance USD',
             'color' => '#8b5cf6',
             'icono' => 'briefcase',
+            'moneda_base_codigo' => 'USD',
         ]);
 
         $maria->update(['presupuesto_activo_id' => $personal->id]);

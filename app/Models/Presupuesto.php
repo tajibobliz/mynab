@@ -20,11 +20,16 @@ class Presupuesto extends Model
         'descripcion',
         'color',
         'icono',
-        'moneda_base_id',
+        'moneda_base_codigo',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function monedaBase(): BelongsTo
+    {
+        return $this->belongsTo(Moneda::class, 'moneda_base_codigo', 'codigo');
     }
 }

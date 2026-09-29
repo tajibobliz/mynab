@@ -1,5 +1,7 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Coins } from 'lucide-vue-next';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ColorPicker from '@/Components/ColorPicker.vue';
 import IconoSelector from '@/Components/IconoSelector.vue';
@@ -18,6 +20,15 @@ const form = useForm({
     descripcion: props.presupuesto.descripcion ?? '',
     color: props.presupuesto.color,
     icono: props.presupuesto.icono,
+});
+
+// Moneda base es fija tras crear (design.md) — se muestra de solo lectura,
+// nunca viaja en el form. Se busca en el catálogo compartido para mostrar
+// nombre/símbolo; si la moneda fue desactivada después (edge case), cae al
+// código plano en vez de romper.
+const monedaBase = computed(() => {
+    const monedas = usePage().props.monedasActivas;
+    return monedas.find((m) => m.codigo === props.presupuesto.moneda_base_codigo) ?? null;
 });
 
 const submit = () => {
@@ -63,6 +74,18 @@ const submit = () => {
                             class="mt-1 block w-full rounded-md border-gray-300 focus:border-accent-primary focus:ring-accent-primary dark:bg-base dark:border-border dark:text-text dark:placeholder-text-secondary transition duration-150 ease-in-out"
                         />
                         <InputError class="mt-2" :message="form.errors.descripcion" />
+                    </div>
+
+                    <div>
+                        <InputLabel value="Moneda base" />
+                        <div
+                            class="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-border text-sm text-gray-700 dark:text-text cursor-default"
+                            title="No se puede cambiar después de crear el presupuesto"
+                        >
+                            <Coins class="size-3.5 text-text-secondary" />
+                            <span class="font-mono font-semibold">{{ presupuesto.moneda_base_codigo }}</span>
+                            <span v-if="monedaBase" class="text-text-secondary">— {{ monedaBase.simbolo }} {{ monedaBase.nombre }}</span>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

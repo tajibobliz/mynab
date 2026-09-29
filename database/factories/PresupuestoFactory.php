@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Moneda;
 use App\Models\Presupuesto;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -54,7 +55,10 @@ class PresupuestoFactory extends Factory
             'descripcion' => fake()->optional()->sentence(),
             'color' => fake()->randomElement(self::COLORES),
             'icono' => fake()->randomElement(self::ICONOS),
-            'moneda_base_id' => null,
+            // Consulta la BD real (no una lista fija en PHP) para no
+            // desincronizarse si el catálogo de monedas cambia; 'BOB' es el
+            // fallback si por algún motivo la tabla monedas está vacía.
+            'moneda_base_codigo' => Moneda::inRandomOrder()->value('codigo') ?? 'BOB',
         ];
     }
 }

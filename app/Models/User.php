@@ -79,4 +79,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Presupuesto::class, 'presupuesto_activo_id');
     }
+
+    public function tiposCambio(): HasMany
+    {
+        return $this->hasMany(TipoCambio::class);
+    }
 }

@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StorePresupuestoRequest extends FormRequest
 {
@@ -30,6 +31,7 @@ class StorePresupuestoRequest extends FormRequest
             'descripcion' => ['nullable', 'string', 'max:500'],
             'color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'icono' => ['required', 'string', 'in:'.implode(',', config('mynab.iconos_presupuesto'))],
+            'moneda_base_codigo' => ['required', 'string', Rule::exists('monedas', 'codigo')->where('activa', true)],
         ];
     }
 
@@ -67,6 +69,8 @@ class StorePresupuestoRequest extends FormRequest
             'color.regex' => 'El color debe ser un hexadecimal válido (#RRGGBB).',
             'icono.required' => 'El icono es obligatorio.',
             'icono.in' => 'Selecciona un icono válido de la lista.',
+            'moneda_base_codigo.required' => 'La moneda base es requerida.',
+            'moneda_base_codigo.exists' => 'La moneda seleccionada no está activa.',
         ];
     }
 }

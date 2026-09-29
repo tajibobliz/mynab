@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Moneda;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,11 +42,12 @@ class HandleInertiaRequests extends Middleware
         // instancia. Como ambos middlewares resuelven el mismo objeto de
         // Auth::user(), esto basta para exponer
         // `auth.user.presupuestos` / `.presupuestoActivo` sin tocar el vendor.
-        $request->user()?->loadMissing(['presupuestos', 'presupuestoActivo']);
+        $request->user()?->loadMissing(['presupuestos', 'presupuestoActivo.monedaBase']);
 
         return [
             ...parent::share($request),
             'iconosPresupuesto' => config('mynab.iconos_presupuesto'),
+            'monedasActivas' => Moneda::activas()->orderBy('codigo')->get(),
         ];
     }
 }

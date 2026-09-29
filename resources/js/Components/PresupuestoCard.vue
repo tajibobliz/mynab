@@ -33,7 +33,12 @@ const badgeBg = computed(() => `${props.presupuesto.color}26`); // ~15% opacity
         >
             <component :is="IconComponent" class="size-3.5" :style="{ color: presupuesto.color }" />
         </span>
-        <span class="truncate">{{ presupuesto.nombre }}</span>
+        <span class="truncate">
+            {{ presupuesto.nombre }}
+            <span v-if="presupuesto.moneda_base_codigo" class="font-mono text-xs text-text-secondary">
+                · {{ presupuesto.moneda_base_codigo }}
+            </span>
+        </span>
     </div>
 
     <div v-else class="rounded-lg border border-border bg-surface p-5 flex flex-col gap-3">

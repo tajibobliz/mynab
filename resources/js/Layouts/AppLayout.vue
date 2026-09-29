@@ -62,6 +62,14 @@ const logout = () => {
                                 <NavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
                                     Presupuestos
                                 </NavLink>
+
+                                <NavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
+                                    Monedas
+                                </NavLink>
+
+                                <NavLink :href="route('tipos-cambio.index')" :active="route().current('tipos-cambio.*')">
+                                    Tipos de cambio
+                                </NavLink>
                             </div>
                         </div>
 
@@ -195,6 +203,14 @@ const logout = () => {
 
                         <ResponsiveNavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
                             Presupuestos
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
+                            Monedas
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('tipos-cambio.index')" :active="route().current('tipos-cambio.*')">
+                            Tipos de cambio
                         </ResponsiveNavLink>
                     </div>
 

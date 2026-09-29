@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Moneda;
 use App\Models\Presupuesto;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,6 +46,7 @@ test('usuario autenticado puede crear un presupuesto con datos válidos', functi
         'descripcion' => 'Gastos del día a día',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertRedirect(route('presupuestos.index'));
@@ -54,6 +56,7 @@ test('usuario autenticado puede crear un presupuesto con datos válidos', functi
         'descripcion' => 'Gastos del día a día',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 });
 
@@ -65,6 +68,7 @@ test('crear presupuesto con nombre duplicado case-insensitive para el mismo usua
         'nombre' => 'PERSONAL',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('nombre');
@@ -80,6 +84,7 @@ test('crear presupuesto con el mismo nombre para otro usuario es permitido', fun
         'nombre' => 'Personal',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertRedirect(route('presupuestos.index'));
@@ -95,6 +100,7 @@ test('el primer presupuesto creado se asigna automáticamente como activo', func
         'nombre' => 'Uno',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $primero = Presupuesto::where('user_id', $user->id)->firstOrFail();
@@ -105,6 +111,7 @@ test('el primer presupuesto creado se asigna automáticamente como activo', func
         'nombre' => 'Dos',
         'color' => '#8b5cf6',
         'icono' => 'briefcase',
+        'moneda_base_codigo' => 'USD',
     ]);
 
     expect($user->fresh()->presupuesto_activo_id)->toBe($primero->id);
@@ -229,6 +236,7 @@ test('la validación rechaza un color con formato hex inválido', function () {
         'nombre' => 'Personal',
         'color' => 'verde',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('color');
@@ -242,6 +250,7 @@ test('la validación rechaza un icono fuera de la whitelist', function () {
         'nombre' => 'Personal',
         'color' => '#22c55e',
         'icono' => 'icono-que-no-existe',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('icono');
@@ -255,6 +264,7 @@ test('la validación rechaza un nombre vacío', function () {
         'nombre' => '',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('nombre');
@@ -267,6 +277,7 @@ test('la validación rechaza un nombre de menos de 2 caracteres', function () {
         'nombre' => 'A',
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('nombre');
@@ -279,6 +290,7 @@ test('la validación rechaza un nombre de más de 100 caracteres', function () {
         'nombre' => str_repeat('a', 101),
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('nombre');
@@ -292,7 +304,55 @@ test('la validación rechaza una descripción de más de 500 caracteres', functi
         'descripcion' => str_repeat('a', 501),
         'color' => '#22c55e',
         'icono' => 'wallet',
+        'moneda_base_codigo' => 'BOB',
     ]);
 
     $response->assertSessionHasErrors('descripcion');
+});
+
+// ---------------------------------------------------------------------
+// Moneda base (gestion-monedas-tipos-cambio)
+// ---------------------------------------------------------------------
+
+test('crear presupuesto sin moneda_base_codigo falla la validacion', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post(route('presupuestos.store'), [
+        'nombre' => 'Test',
+        'color' => '#22c55e',
+        'icono' => 'wallet',
+    ]);
+
+    $response->assertSessionHasErrors('moneda_base_codigo');
+    $this->assertDatabaseCount('presupuestos', 0);
+});
+
+test('crear presupuesto con una moneda inactiva falla la validacion', function () {
+    $user = User::factory()->create();
+    $inactiva = Moneda::factory()->inactiva()->create();
+
+    $response = $this->actingAs($user)->post(route('presupuestos.store'), [
+        'nombre' => 'Test',
+        'color' => '#22c55e',
+        'icono' => 'wallet',
+        'moneda_base_codigo' => $inactiva->codigo,
+    ]);
+
+    $response->assertSessionHasErrors('moneda_base_codigo');
+    $this->assertDatabaseCount('presupuestos', 0);
+});
+
+test('actualizar presupuesto no permite cambiar moneda_base_codigo', function () {
+    $user = User::factory()->create();
+    $presupuesto = Presupuesto::factory()->for($user)->create(['moneda_base_codigo' => 'BOB']);
+
+    $response = $this->actingAs($user)->put(route('presupuestos.update', $presupuesto), [
+        'nombre' => 'Actualizado',
+        'color' => '#3b82f6',
+        'icono' => 'home',
+        'moneda_base_codigo' => 'USD',
+    ]);
+
+    $response->assertRedirect(route('presupuestos.index'));
+    expect($presupuesto->fresh()->moneda_base_codigo)->toBe('BOB');
 });

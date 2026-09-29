@@ -74,7 +74,12 @@ class PresupuestoController extends Controller
     {
         $this->authorize('update', $presupuesto);
 
-        $presupuesto->update($request->validated());
+        // moneda_base_codigo es fija tras crear el presupuesto (design.md).
+        // UpdatePresupuestoRequest ya no la valida, pero esto es defensa en
+        // profundidad: si llegara en el payload raw, nunca se actualiza.
+        $validated = array_diff_key($request->validated(), ['moneda_base_codigo' => 0]);
+
+        $presupuesto->update($validated);
 
         return redirect()->route('presupuestos.index')
             ->with('flash.success', 'Presupuesto actualizado.');

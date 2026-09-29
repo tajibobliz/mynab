@@ -5,6 +5,7 @@ import ColorPicker from '@/Components/ColorPicker.vue';
 import IconoSelector from '@/Components/IconoSelector.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import MonedaSelector from '@/Components/MonedaSelector.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -12,6 +13,7 @@ import TextInput from '@/Components/TextInput.vue';
 const form = useForm({
     nombre: '',
     descripcion: '',
+    moneda_base_codigo: '',
     color: '#22c55e',
     icono: 'wallet',
 });
@@ -59,6 +61,16 @@ const submit = () => {
                             class="mt-1 block w-full rounded-md border-gray-300 focus:border-accent-primary focus:ring-accent-primary dark:bg-base dark:border-border dark:text-text dark:placeholder-text-secondary transition duration-150 ease-in-out"
                         />
                         <InputError class="mt-2" :message="form.errors.descripcion" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="moneda_base_codigo" value="Moneda base" />
+                        <MonedaSelector
+                            id="moneda_base_codigo"
+                            v-model="form.moneda_base_codigo"
+                            class="mt-1 block w-full sm:w-1/2"
+                        />
+                        <InputError class="mt-2" :message="form.errors.moneda_base_codigo" />
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
