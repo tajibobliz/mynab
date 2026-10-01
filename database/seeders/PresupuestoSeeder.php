@@ -62,6 +62,50 @@ class PresupuestoSeeder extends Seeder
             ],
         ]);
 
+        // 4 grupos + 10 categorías del escenario oficial, todos en Personal.
+        // Freelance USD queda sin grupos a propósito (Grupo 12: empty state).
+        $obligaciones = $personal->gruposCategorias()->create([
+            'nombre' => 'Obligaciones inmediatas',
+            'color' => '#ef4444',
+            'icono' => 'AlertCircle',
+        ]);
+        $obligaciones->categorias()->createMany([
+            ['nombre' => 'Alquiler'],
+            ['nombre' => 'Transporte'],
+            ['nombre' => 'Comida básica'],
+        ]);
+
+        $gastosReales = $personal->gruposCategorias()->create([
+            'nombre' => 'Gastos reales',
+            'color' => '#f59e0b',
+            'icono' => 'Sparkles',
+        ]);
+        $gastosReales->categorias()->createMany([
+            ['nombre' => 'Ropa'],
+            ['nombre' => 'Cortes de pelo'],
+            ['nombre' => 'Regalos'],
+        ]);
+
+        $calidadVida = $personal->gruposCategorias()->create([
+            'nombre' => 'Calidad de vida',
+            'color' => '#8b5cf6',
+            'icono' => 'Music',
+        ]);
+        $calidadVida->categorias()->createMany([
+            ['nombre' => 'Salidas'],
+            ['nombre' => 'Suscripciones'],
+        ]);
+
+        $ahorros = $personal->gruposCategorias()->create([
+            'nombre' => 'Ahorros',
+            'color' => '#22c55e',
+            'icono' => 'PiggyBank',
+        ]);
+        $ahorros->categorias()->createMany([
+            ['nombre' => 'Emergencia'],
+            ['nombre' => 'Viajes'],
+        ]);
+
         $maria->presupuestos()->create([
             'nombre' => 'Freelance USD',
             'color' => '#8b5cf6',

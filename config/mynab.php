@@ -37,4 +37,41 @@ return [
         'film',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos de grupo de categorías
+    |--------------------------------------------------------------------------
+    |
+    | Whitelist de iconos Lucide para GrupoCategoria. A diferencia de
+    | iconos_presupuesto (kebab-case), estos valores son el nombre EXACTO del
+    | export de lucide-vue-next (PascalCase) — mismo patrón ya usado por
+    | TipoCuenta::opciones() en Change 4 ('Landmark', 'Banknote', 'Wallet').
+    | El frontend los resuelve con grupoCategoriaIconMap.js (no
+    | lucideIconMap.js, que es kebab-case y de iconos_presupuesto).
+    |
+    */
+
+    'iconos_grupo_categoria' => [
+        'AlertCircle',
+        'Home',
+        'Car',
+        'ShoppingCart',
+        'Shirt',
+        'Scissors',
+        'Gift',
+        'Sparkles',
+        'Music',
+        'Tv',
+        'PiggyBank',
+        'TrendingUp',
+        'Target',
+        'Umbrella',
+        'Coffee',
+        'Utensils',
+        'Wifi',
+        'Fuel',
+        'Book',
+        'Dumbbell',
+    ],
+
 ];

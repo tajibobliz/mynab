@@ -100,7 +100,7 @@ const submit = () => {
                         <div>
                             <InputLabel value="Icono" />
                             <div class="mt-2">
-                                <IconoSelector v-model="form.icono" />
+                                <IconoSelector v-model="form.icono" :iconos="$page.props.iconosPresupuesto" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.icono" />
                         </div>

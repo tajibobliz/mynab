@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\GrupoCategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\TipoCambioController;
@@ -46,4 +48,19 @@ Route::middleware([
         ->parameters(['tipos-cambio' => 'tipo_cambio']);
 
     Route::resource('cuentas', CuentaController::class)->except('show');
+
+    // Mismo bug de tipos-cambio: Str::singular('grupos-categorias') solo le
+    // quita la 's' a "categorias" ("grupos" queda plural), así que el
+    // wildcard por defecto sería {grupos_categoria} (plural-singular) y no
+    // calzaría con GrupoCategoriaController::update(GrupoCategoria
+    // $grupoCategoria) (cuyo Str::snake es 'grupo_categoria', singular-singular).
+    // Verificado con tinker antes de escribir esto (Grupo 7 del plan).
+    Route::resource('grupos-categorias', GrupoCategoriaController::class)
+        ->except('show')
+        ->parameters(['grupos-categorias' => 'grupo_categoria']);
+
+    // "categorias" no tiene guión -> Str::singular('categorias') = 'categoria'
+    // sin ambigüedad, coincide con Categoria $categoria. Sin ->parameters().
+    Route::resource('categorias', CategoriaController::class)
+        ->only(['store', 'update', 'destroy']);
 });

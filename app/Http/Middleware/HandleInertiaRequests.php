@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'iconosPresupuesto' => config('mynab.iconos_presupuesto'),
+            'iconosGrupoCategoria' => config('mynab.iconos_grupo_categoria'),
             'monedasActivas' => Moneda::activas()->orderBy('codigo')->get(),
             // Closure: Inertia la resuelve en el mismo momento que cualquier
             // otro prop de un full load (ver Response::resolvePartialProperties
@@ -64,6 +65,17 @@ class HandleInertiaRequests extends Middleware
                 $user->loadMissing('presupuestoActivo.cuentas.moneda');
 
                 return $user->presupuestoActivo?->cuentas ?? [];
+            },
+            'gruposCategoriasDelPresupuestoActivo' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user || ! $user->presupuesto_activo_id) {
+                    return [];
+                }
+
+                $user->loadMissing('presupuestoActivo.gruposCategorias.categorias');
+
+                return $user->presupuestoActivo?->gruposCategorias ?? [];
             },
         ];
     }

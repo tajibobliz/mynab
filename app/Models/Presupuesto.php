@@ -38,4 +38,9 @@ class Presupuesto extends Model
     {
         return $this->hasMany(Cuenta::class);
     }
+
+    public function gruposCategorias(): HasMany
+    {
+        return $this->hasMany(GrupoCategoria::class);
+    }
 }

@@ -67,6 +67,10 @@ const logout = () => {
                                     Cuentas
                                 </NavLink>
 
+                                <NavLink :href="route('grupos-categorias.index')" :active="route().current('grupos-categorias.*')">
+                                    Categorías
+                                </NavLink>
+
                                 <NavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
                                     Monedas
                                 </NavLink>
@@ -211,6 +215,10 @@ const logout = () => {
 
                         <ResponsiveNavLink :href="route('cuentas.index')" :active="route().current('cuentas.*')">
                             Cuentas
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('grupos-categorias.index')" :active="route().current('grupos-categorias.*')">
+                            Categorías
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="route('monedas.index')" :active="route().current('monedas.*')">

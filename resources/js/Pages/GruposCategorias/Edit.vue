@@ -5,31 +5,33 @@ import ColorPicker from '@/Components/ColorPicker.vue';
 import IconoSelector from '@/Components/IconoSelector.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import MonedaSelector from '@/Components/MonedaSelector.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { grupoCategoriaIconMap } from '@/grupoCategoriaIconMap';
+
+const props = defineProps({
+    grupo: Object,
+});
 
 const form = useForm({
-    nombre: '',
-    descripcion: '',
-    moneda_base_codigo: '',
-    color: '#22c55e',
-    icono: 'wallet',
+    nombre: props.grupo.nombre,
+    color: props.grupo.color,
+    icono: props.grupo.icono,
 });
 
 const submit = () => {
-    form.post(route('presupuestos.store'));
+    form.put(route('grupos-categorias.update', props.grupo.id));
 };
 </script>
 
 <template>
-    <Head title="Nuevo presupuesto" />
+    <Head :title="`Editar grupo: ${grupo.nombre}`" />
 
-    <AppLayout title="Nuevo presupuesto">
+    <AppLayout :title="`Editar grupo: ${grupo.nombre}`">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-text leading-tight">
-                Nuevo presupuesto
+                Editar grupo: {{ grupo.nombre }}
             </h2>
         </template>
 
@@ -53,53 +55,34 @@ const submit = () => {
                     </div>
 
                     <div>
-                        <InputLabel for="descripcion" value="Descripción (opcional)" />
-                        <textarea
-                            id="descripcion"
-                            v-model="form.descripcion"
-                            rows="3"
-                            class="mt-1 block w-full rounded-md border-gray-300 focus:border-accent-primary focus:ring-accent-primary dark:bg-base dark:border-border dark:text-text dark:placeholder-text-secondary transition duration-150 ease-in-out"
-                        />
-                        <InputError class="mt-2" :message="form.errors.descripcion" />
+                        <InputLabel value="Icono" />
+                        <div class="mt-2">
+                            <IconoSelector
+                                v-model="form.icono"
+                                :iconos="$page.props.iconosGrupoCategoria"
+                                :icon-map="grupoCategoriaIconMap"
+                            />
+                        </div>
+                        <InputError class="mt-2" :message="form.errors.icono" />
                     </div>
 
                     <div>
-                        <InputLabel for="moneda_base_codigo" value="Moneda base" />
-                        <MonedaSelector
-                            id="moneda_base_codigo"
-                            v-model="form.moneda_base_codigo"
-                            class="mt-1 block w-full sm:w-1/2"
-                        />
-                        <InputError class="mt-2" :message="form.errors.moneda_base_codigo" />
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <InputLabel value="Color" />
-                            <div class="mt-2">
-                                <ColorPicker v-model="form.color" />
-                            </div>
-                            <InputError class="mt-2" :message="form.errors.color" />
+                        <InputLabel value="Color" />
+                        <div class="mt-2">
+                            <ColorPicker v-model="form.color" />
                         </div>
-
-                        <div>
-                            <InputLabel value="Icono" />
-                            <div class="mt-2">
-                                <IconoSelector v-model="form.icono" :iconos="$page.props.iconosPresupuesto" />
-                            </div>
-                            <InputError class="mt-2" :message="form.errors.icono" />
-                        </div>
+                        <InputError class="mt-2" :message="form.errors.color" />
                     </div>
 
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-border">
-                        <Link :href="route('presupuestos.index')">
+                        <Link :href="route('grupos-categorias.index')">
                             <SecondaryButton type="button" :disabled="form.processing">
                                 Cancelar
                             </SecondaryButton>
                         </Link>
 
                         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Crear presupuesto
+                            Guardar cambios
                         </PrimaryButton>
                     </div>
                 </form>
