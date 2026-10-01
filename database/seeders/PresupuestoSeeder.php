@@ -106,6 +106,19 @@ class PresupuestoSeeder extends Seeder
             ['nombre' => 'Viajes'],
         ]);
 
+        // 8 beneficiarios del escenario oficial, todos en Personal. Freelance
+        // USD queda sin beneficiarios a propósito (Grupo 11: empty state).
+        $personal->beneficiarios()->createMany([
+            ['nombre' => 'Dueño del alquiler', 'notas' => null],
+            ['nombre' => 'SIM Entel', 'notas' => null],
+            ['nombre' => 'Netflix', 'notas' => null],
+            ['nombre' => 'Spotify', 'notas' => null],
+            ['nombre' => 'Supermercado Hipermaxi', 'notas' => null],
+            ['nombre' => 'Mi barbero', 'notas' => 'Avenida Beni, cerca del semáforo'],
+            ['nombre' => 'Empresa X (sueldo)', 'notas' => null],
+            ['nombre' => 'Cliente freelance A', 'notas' => null],
+        ]);
+
         $maria->presupuestos()->create([
             'nombre' => 'Freelance USD',
             'color' => '#8b5cf6',

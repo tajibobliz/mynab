@@ -71,6 +71,10 @@ const logout = () => {
                                     Categorías
                                 </NavLink>
 
+                                <NavLink :href="route('beneficiarios.index')" :active="route().current('beneficiarios.*')">
+                                    Beneficiarios
+                                </NavLink>
+
                                 <NavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
                                     Monedas
                                 </NavLink>
@@ -219,6 +223,10 @@ const logout = () => {
 
                         <ResponsiveNavLink :href="route('grupos-categorias.index')" :active="route().current('grupos-categorias.*')">
                             Categorías
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('beneficiarios.index')" :active="route().current('beneficiarios.*')">
+                            Beneficiarios
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="route('monedas.index')" :active="route().current('monedas.*')">

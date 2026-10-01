@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\GrupoCategoriaController;
@@ -63,4 +64,11 @@ Route::middleware([
     // sin ambigüedad, coincide con Categoria $categoria. Sin ->parameters().
     Route::resource('categorias', CategoriaController::class)
         ->only(['store', 'update', 'destroy']);
+
+    // "beneficiarios" tampoco tiene guión -> Str::singular('beneficiarios')
+    // = 'beneficiario' sin ambigüedad, coincide con BeneficiarioController
+    // ::update(Beneficiario $beneficiario). Sin ->parameters(). Verificado
+    // con route:list -v y con un dispatch real antes de confiar en esto
+    // (mismo rigor que el bug de tipos-cambio, aunque aqui no habia guion).
+    Route::resource('beneficiarios', BeneficiarioController::class)->except('show');
 });

@@ -77,6 +77,17 @@ class HandleInertiaRequests extends Middleware
 
                 return $user->presupuestoActivo?->gruposCategorias ?? [];
             },
+            'beneficiariosDelPresupuestoActivo' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user || ! $user->presupuesto_activo_id) {
+                    return [];
+                }
+
+                $user->loadMissing('presupuestoActivo.beneficiarios');
+
+                return $user->presupuestoActivo?->beneficiarios ?? [];
+            },
         ];
     }
 }
