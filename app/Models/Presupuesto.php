@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Presupuesto extends Model
@@ -47,5 +48,10 @@ class Presupuesto extends Model
     public function beneficiarios(): HasMany
     {
         return $this->hasMany(Beneficiario::class);
+    }
+
+    public function transacciones(): HasManyThrough
+    {
+        return $this->hasManyThrough(Transaccion::class, Cuenta::class);
     }
 }

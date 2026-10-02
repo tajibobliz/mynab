@@ -6,6 +6,7 @@ use Database\Factories\BeneficiarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Beneficiario extends Model
@@ -23,5 +24,10 @@ class Beneficiario extends Model
     public function presupuesto(): BelongsTo
     {
         return $this->belongsTo(Presupuesto::class);
+    }
+
+    public function transacciones(): HasMany
+    {
+        return $this->hasMany(Transaccion::class);
     }
 }

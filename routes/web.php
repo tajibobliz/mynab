@@ -7,6 +7,7 @@ use App\Http\Controllers\GrupoCategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\TipoCambioController;
+use App\Http\Controllers\TransaccionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,4 +72,17 @@ Route::middleware([
     // con route:list -v y con un dispatch real antes de confiar en esto
     // (mismo rigor que el bug de tipos-cambio, aunque aqui no habia guion).
     Route::resource('beneficiarios', BeneficiarioController::class)->except('show');
+
+    // CRITICO: a diferencia de categorias/beneficiarios, "transacciones" SI
+    // necesita ->parameters() aunque no tenga guion. Str::singular('transacciones')
+    // = 'transaccione' (el inflector en ingles trata el final "-es" como el
+    // patron ingles "boxes"->"box", no reconoce el "-ciones" espanol), pero
+    // Str::snake('Transaccion') = 'transaccion' (sin la "e" final). Sin este
+    // fix el wildcard por defecto habria sido {transaccione}, que NUNCA
+    // calzaria con TransaccionController::update(Transaccion $transaccion)
+    // -> mismo bug silencioso de tipos-cambio en Change 3. Verificado con
+    // tinker ANTES de asumir que "sin guion" bastaba (no bastaba).
+    Route::resource('transacciones', TransaccionController::class)
+        ->except('show')
+        ->parameters(['transacciones' => 'transaccion']);
 });

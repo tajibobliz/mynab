@@ -6,6 +6,7 @@ use Database\Factories\CategoriaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Categoria extends Model
@@ -28,5 +29,20 @@ class Categoria extends Model
     public function grupoCategoria(): BelongsTo
     {
         return $this->belongsTo(GrupoCategoria::class);
+    }
+
+    /**
+     * Transacciones NO split con esta categoría directa. Las transacciones
+     * split guardan la categoría en transacciones_split, no aquí — Change 8
+     * necesitará unir ambas fuentes para el "Activity" total por categoría.
+     */
+    public function transacciones(): HasMany
+    {
+        return $this->hasMany(Transaccion::class);
+    }
+
+    public function splits(): HasMany
+    {
+        return $this->hasMany(TransaccionSplit::class);
     }
 }

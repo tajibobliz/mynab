@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Moneda;
+use App\Models\Transaccion;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -87,6 +88,31 @@ class HandleInertiaRequests extends Middleware
                 $user->loadMissing('presupuestoActivo.beneficiarios');
 
                 return $user->presupuestoActivo?->beneficiarios ?? [];
+            },
+            // Desviación deliberada del patrón loadMissing de los closures
+            // anteriores: Presupuesto::transacciones() es un hasManyThrough,
+            // y loadMissing() traería TODAS las transacciones del presupuesto
+            // a memoria antes de poder aplicar un limit() en PHP — con
+            // potencialmente cientos de filas por mes, es exactamente el tipo
+            // de query que este prop necesita evitar. Una query directa con
+            // `limit(20)` en SQL es la única forma correcta de limitar en la
+            // base de datos, no en PHP tras cargar de más.
+            'transaccionesRecientesDelPresupuestoActivo' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user || ! $user->presupuesto_activo_id) {
+                    return [];
+                }
+
+                return Transaccion::whereHas('cuenta', fn ($q) => $q->where('presupuesto_id', $user->presupuesto_activo_id))
+                    ->with([
+                        'cuenta:id,nombre,moneda_codigo',
+                        'categoria:id,nombre',
+                        'beneficiario:id,nombre',
+                    ])
+                    ->orderByDesc('fecha_hora')
+                    ->limit(20)
+                    ->get();
             },
         ];
     }

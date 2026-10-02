@@ -7,6 +7,7 @@ use Database\Factories\CuentaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cuenta extends Model
@@ -53,14 +54,31 @@ class Cuenta extends Model
         return $this->belongsTo(Moneda::class, 'moneda_codigo', 'codigo');
     }
 
+    public function transacciones(): HasMany
+    {
+        return $this->hasMany(Transaccion::class);
+    }
+
+    public function transaccionesComoDestino(): HasMany
+    {
+        return $this->hasMany(Transaccion::class, 'cuenta_destino_id');
+    }
+
     /**
-     * En este change retorna solo el saldo inicial: la tabla `transacciones`
-     * todavía no existe. Change 7 extiende este cálculo sumando inflow/outflow
-     * y transferencias (ver design.md Decisión 5 de gestion-cuentas).
+     * Suma saldo inicial + inflows - outflows - transfers salientes +
+     * transfers entrantes (design.md Decisión 9 de gestion-transacciones).
+     * Dispara 4 queries por cuenta — N+1 potencial en el Index de Cuentas si
+     * hay muchas; aceptado como backlog Fase 2 (un servicio con eager
+     * loading agregado), no bloqueante para Fase 1 con pocas cuentas.
      */
     public function getSaldoActualCentavosAttribute(): int
     {
-        return $this->saldo_inicial_centavos;
+        $outflows = $this->transacciones()->where('tipo', 'outflow')->sum('monto_centavos');
+        $inflows = $this->transacciones()->where('tipo', 'inflow')->sum('monto_centavos');
+        $transfersOut = $this->transacciones()->where('tipo', 'transfer')->sum('monto_centavos');
+        $transfersIn = $this->transaccionesComoDestino()->where('tipo', 'transfer')->sum('monto_centavos_destino');
+
+        return $this->saldo_inicial_centavos + $inflows - $outflows - $transfersOut + $transfersIn;
     }
 
     public function saldoActualFormateado(): string

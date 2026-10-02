@@ -59,8 +59,8 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
 
-                                <NavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
-                                    Presupuestos
+                                <NavLink :href="route('transacciones.index')" :active="route().current('transacciones.*')">
+                                    Transacciones
                                 </NavLink>
 
                                 <NavLink :href="route('cuentas.index')" :active="route().current('cuentas.*')">
@@ -73,6 +73,10 @@ const logout = () => {
 
                                 <NavLink :href="route('beneficiarios.index')" :active="route().current('beneficiarios.*')">
                                     Beneficiarios
+                                </NavLink>
+
+                                <NavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
+                                    Presupuestos
                                 </NavLink>
 
                                 <NavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
@@ -213,8 +217,8 @@ const logout = () => {
                             Dashboard
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
-                            Presupuestos
+                        <ResponsiveNavLink :href="route('transacciones.index')" :active="route().current('transacciones.*')">
+                            Transacciones
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="route('cuentas.index')" :active="route().current('cuentas.*')">
@@ -227,6 +231,10 @@ const logout = () => {
 
                         <ResponsiveNavLink :href="route('beneficiarios.index')" :active="route().current('beneficiarios.*')">
                             Beneficiarios
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('presupuestos.index')" :active="route().current('presupuestos.*')">
+                            Presupuestos
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="route('monedas.index')" :active="route().current('monedas.*')">
