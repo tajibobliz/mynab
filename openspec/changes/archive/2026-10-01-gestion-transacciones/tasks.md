@@ -763,8 +763,8 @@ el baseline de 18 transacciones.
 
 ## 15. Cierre
 
-- [ ] 15.1 Actualizar tasks.md marcando todo completado
-- [ ] 15.2 Commit feat
-- [ ] 15.3 openspec archive gestion-transacciones
-- [ ] 15.4 Verificar openspec list (0 changes) y openspec list --specs (9 specs)
-- [ ] 15.5 Commit chore + push
+- [x] 15.1 Actualizar tasks.md marcando todo completado
+- [x] 15.2 Commit feat (f66114e, pusheado a origin/main)
+- [x] 15.3 openspec archive gestion-transacciones
+- [x] 15.4 Verificar openspec list (0 changes) y openspec list --specs (9 specs)
+- [x] 15.5 Commit chore + push
