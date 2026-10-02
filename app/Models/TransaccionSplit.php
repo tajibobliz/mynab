@@ -24,6 +24,7 @@ class TransaccionSplit extends Model
         'transaccion_id',
         'categoria_id',
         'monto_centavos',
+        'monto_moneda_base_centavos',
         'notas',
     ];
 
@@ -31,6 +32,7 @@ class TransaccionSplit extends Model
     {
         return [
             'monto_centavos' => 'integer',
+            'monto_moneda_base_centavos' => 'integer',
         ];
     }
 

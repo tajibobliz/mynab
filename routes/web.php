@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AsignacionController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GrupoCategoriaController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PresupuestoController;
+use App\Http\Controllers\PresupuestoMensualController;
 use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\TransaccionController;
 use Illuminate\Foundation\Application;
@@ -26,9 +29,12 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    // Modificación cruzada mínima a Change 1 (gestion-jetstream-inertia-auth):
+    // /dashboard era un closure inline desde el scaffolding original. Change
+    // 8 lo convierte en DashboardController::index() porque ahora necesita
+    // el presupuesto activo + PresupuestoMensualService para mostrar Ready
+    // to Assign y los "sobres atentos" — ya no es una página estática.
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('presupuestos', PresupuestoController::class);
     Route::post('presupuestos/{presupuesto}/seleccionar', [PresupuestoController::class, 'seleccionar'])
@@ -85,4 +91,15 @@ Route::middleware([
     Route::resource('transacciones', TransaccionController::class)
         ->except('show')
         ->parameters(['transacciones' => 'transaccion']);
+
+    // only(['store']): sin wildcard {asignacion} en la única ruta registrada,
+    // el ->parameters() de abajo es un no-op hoy (no hay nada que mapear) —
+    // se deja igual por si Fase 2 agrega update/destroy a este resource.
+    // El $table='asignaciones' del modelo (Grupo 1/2) es lo que sí importa.
+    Route::resource('asignaciones', AsignacionController::class)
+        ->only(['store'])
+        ->parameters(['asignaciones' => 'asignacion']);
+
+    Route::get('/presupuesto-mensual', [PresupuestoMensualController::class, 'index'])
+        ->name('presupuesto-mensual.index');
 });

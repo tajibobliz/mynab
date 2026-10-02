@@ -45,4 +45,9 @@ class Categoria extends Model
     {
         return $this->hasMany(TransaccionSplit::class);
     }
+
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(Asignacion::class);
+    }
 }

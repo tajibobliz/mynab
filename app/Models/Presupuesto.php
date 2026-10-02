@@ -54,4 +54,9 @@ class Presupuesto extends Model
     {
         return $this->hasManyThrough(Transaccion::class, Cuenta::class);
     }
+
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(Asignacion::class);
+    }
 }

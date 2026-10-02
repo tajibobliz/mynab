@@ -59,6 +59,10 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
 
+                                <NavLink :href="route('presupuesto-mensual.index')" :active="route().current('presupuesto-mensual.*')">
+                                    Presupuesto
+                                </NavLink>
+
                                 <NavLink :href="route('transacciones.index')" :active="route().current('transacciones.*')">
                                     Transacciones
                                 </NavLink>
@@ -215,6 +219,10 @@ const logout = () => {
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('presupuesto-mensual.index')" :active="route().current('presupuesto-mensual.*')">
+                            Presupuesto
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="route('transacciones.index')" :active="route().current('transacciones.*')">

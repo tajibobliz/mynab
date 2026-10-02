@@ -69,8 +69,27 @@ class TransaccionSeeder extends Seeder
         $service = app(CalculadoraTransaccionService::class);
         $monedaBase = $personal->moneda_base_codigo;
 
+        // Ancla fija (no now()): el escenario representa octubre 2026
+        // específicamente (design.md de Change 8 asume Activity real en ese
+        // mes exacto para 10 categorías). Con now(), el escenario entero se
+        // corre hacia atrás cada día que pasa desde que se escribió este
+        // seeder, y en cuanto "hoy" avanza más allá del 1-2 de octubre, los
+        // offsets de hasta 20 días caen en septiembre en vez de octubre —
+        // exactamente lo que pasó al verificar el Grupo 11 de Change 8 (17
+        // de 18 transacciones aparecían en septiembre).
+        //
+        // La ancla NO puede ser 2026-10-01: el offset máximo usado abajo es
+        // 20 días, y restar días a un ancla de 1ro de octubre solo puede
+        // retroceder hacia SEPTIEMBRE (nunca hacia adelante) — el problema
+        // habría quedado igual de roto, solo que fijo en vez de a la
+        // deriva. Para que los 20 días de offset caigan DENTRO de octubre
+        // (1-21), el ancla necesita margen: se fija en 2026-10-21, de forma
+        // que fecha(20) = 1ro de octubre (límite) y fecha(1) = 20 de
+        // octubre. Modificación cruzada mínima a Change 7, aprobada y
+        // documentada en el commit de Change 8.
+        $ancla = Carbon::parse('2026-10-21 12:00:00');
         $fecha = fn (int $diasAtras, string $hora = '12:00') => Carbon::parse(
-            now()->subDays($diasAtras)->toDateString().' '.$hora
+            $ancla->copy()->subDays($diasAtras)->toDateString().' '.$hora
         );
 
         /**
@@ -183,9 +202,22 @@ class TransaccionSeeder extends Seeder
             'fecha_hora' => $fechaSplit,
             'es_split' => true,
         ]);
+        // monto_moneda_base_centavos por línea calculado con el service real
+        // (no copiado del padre): modificación cruzada mínima a Change 7
+        // (Change 8 design.md Decisión 2). En este escenario es caso
+        // identidad (BOB en cuenta BOB), pero se usa el service igual, nunca
+        // un valor hardcodeado.
         $transaccionSplit->splits()->createMany([
-            ['categoria_id' => $comidaBasica->id, 'monto_centavos' => 25000],
-            ['categoria_id' => $ropa->id, 'monto_centavos' => 7000],
+            [
+                'categoria_id' => $comidaBasica->id,
+                'monto_centavos' => 25000,
+                'monto_moneda_base_centavos' => $service->resolverMontoMonedaBase(25000, $bnb->moneda_codigo, $monedaBase, $maria->id, $fechaSplit)[0],
+            ],
+            [
+                'categoria_id' => $ropa->id,
+                'monto_centavos' => 7000,
+                'monto_moneda_base_centavos' => $service->resolverMontoMonedaBase(7000, $bnb->moneda_codigo, $monedaBase, $maria->id, $fechaSplit)[0],
+            ],
         ]);
 
         // --- Transfers (2) ---

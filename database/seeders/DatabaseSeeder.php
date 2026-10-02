@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PresupuestoSeeder::class);
         $this->call(TipoCambioSeeder::class);
         $this->call(TransaccionSeeder::class);
+        $this->call(AsignacionSeeder::class);
     }
 }

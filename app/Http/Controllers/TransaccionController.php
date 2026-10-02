@@ -108,9 +108,22 @@ class TransaccionController extends Controller
             ]);
 
             foreach ($datos['splits'] ?? [] as $split) {
+                // monto_moneda_base_centavos por línea (modificación cruzada
+                // mínima a Change 7, Change 8 design.md Decisión 2): reutiliza
+                // $cuenta->moneda_codigo y $presupuesto->moneda_base_codigo ya
+                // resueltos arriba en este mismo scope, cero queries extra.
+                [$montoBaseSplit] = $service->resolverMontoMonedaBase(
+                    $split['monto_centavos'],
+                    $cuenta->moneda_codigo,
+                    $presupuesto->moneda_base_codigo,
+                    auth()->id(),
+                    $fechaHora,
+                );
+
                 $transaccion->splits()->create([
                     'categoria_id' => $split['categoria_id'],
                     'monto_centavos' => $split['monto_centavos'],
+                    'monto_moneda_base_centavos' => $montoBaseSplit,
                     'notas' => $split['notas'] ?? null,
                 ]);
             }
@@ -201,9 +214,21 @@ class TransaccionController extends Controller
                 $transaccion->splits()->each(fn ($split) => $split->delete());
 
                 foreach ($datos['splits'] ?? [] as $split) {
+                    // Misma modificación cruzada que en store() (ver Grupo 2
+                    // de Change 8): monto_moneda_base_centavos por línea,
+                    // reutilizando $cuenta/$presupuesto ya resueltos arriba.
+                    [$montoBaseSplit] = $service->resolverMontoMonedaBase(
+                        $split['monto_centavos'],
+                        $cuenta->moneda_codigo,
+                        $presupuesto->moneda_base_codigo,
+                        auth()->id(),
+                        $fechaHora,
+                    );
+
                     $transaccion->splits()->create([
                         'categoria_id' => $split['categoria_id'],
                         'monto_centavos' => $split['monto_centavos'],
+                        'monto_moneda_base_centavos' => $montoBaseSplit,
                         'notas' => $split['notas'] ?? null,
                     ]);
                 }
